@@ -137,10 +137,10 @@
                         <TextBlock TextWrapping="Wrap"  Text="{Binding ProblemSet.Path}" Foreground="#FFE2E2E2" FontSize="14" FontFamily="Segoe UI Light"  />
                     </Grid>
                     <StackPanel DockPanel.Dock="Top" Height="32" Orientation="Horizontal" VerticalAlignment="Top">
-                        <Button Width="29" Margin="3" Command="{Binding ProblemSet.AddEqualityProblemCommand}" Foreground="White">
+                        <Button ToolTip="Add Problem" Width="29" Margin="3" Command="{Binding ProblemSet.AddEqualityProblemCommand}" Foreground="White">
                             <Image Margin="2" Source="/JudgeSharp;component/IMG/add-png.png" />
                         </Button>
-                        <Button Width="29" Margin="3" Command="{Binding ProblemSet.RemoveProblemCommand}">
+                        <Button ToolTip="Remove Problem" Width="29" Margin="3" Command="{Binding ProblemSet.RemoveProblemCommand}">
                             <Image Margin="2" Source="/JudgeSharp;component/IMG/remove-png.png" />
                         </Button>
                     </StackPanel>

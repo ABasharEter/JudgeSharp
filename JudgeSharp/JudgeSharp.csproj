@@ -178,6 +178,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Logo.txt" />
     <EmbeddedResource Include="About.txt" />
+    <Resource Include="IMG\edit-png.png" />
+    <Resource Include="IMG\lock-png.png" />
     <Content Include="ReadMe.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

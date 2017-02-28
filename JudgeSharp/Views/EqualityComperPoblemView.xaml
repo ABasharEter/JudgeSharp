@@ -18,8 +18,12 @@
             <Grid>
                 <TextBlock Text="{Binding Name}" FontSize="24" FontFamily="Nirmala UI" Foreground="White" TextAlignment="Center"/>
                 <TextBox Text="{Binding Name}" Visibility="{Binding IsEditing, Converter={StaticResource bool2Vis}}" FontSize="24" FontFamily="Nirmala UI" Background="#FF333333" Foreground="White" TextAlignment="Center"/>
-                <Button Command="{Binding ToggelEditCommand}" Content="E" HorizontalAlignment="Right" Width="32" Height="32" VerticalAlignment="Top" Margin="0,1,10,0"/>
-                <Button Click="ToggelUnlockButton_Click" Content="L" HorizontalAlignment="Right" Width="32" Height="32" VerticalAlignment="Top" Margin="0,1,47,0"/>
+                <Button ToolTip="Edit" Command="{Binding ToggelEditCommand}" HorizontalAlignment="Right" Width="32" Height="32" VerticalAlignment="Top" Margin="0,1,10,0">
+                    <Image Source="/JudgeSharp;component/IMG/edit-png.png" />
+                </Button>
+                <Button ToolTip="Lock/Unlock" Click="ToggelUnlockButton_Click" HorizontalAlignment="Right" Width="32" Height="32" VerticalAlignment="Top" Margin="0,1,47,0">
+                    <Image Source="/JudgeSharp;component/IMG/lock-png.png" />
+                </Button>
             </Grid>
             <Grid>
                 <Grid.ColumnDefinitions>

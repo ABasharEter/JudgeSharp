@@ -20,10 +20,10 @@
                     <TextBlock Margin="3,3" Text="{Binding Title, ElementName=window}" IsHitTestVisible="False" Foreground="#FFDEDEDE" FontFamily="Nirmala UI Semilight" FontSize="16"/>
                 </StackPanel>
                 <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Right" >
-                    <Button x:Name="MinimizeButton" HorizontalAlignment="Right" Width="19" Click="MinimizeButton_Click"  Margin="2,0">
+                    <Button ToolTip="Minimize" x:Name="MinimizeButton" HorizontalAlignment="Right" Width="19" Click="MinimizeButton_Click"  Margin="2,0">
                         <Image Source="/JudgeSharp;component/IMG/minimize-png.png" />
                     </Button>
-                    <Button x:Name="MaximizeButton" HorizontalAlignment="Right" Width="19" Click="MaximizeButton_Click" Margin="2,0">
+                    <Button ToolTip="Maximize/Restore" x:Name="MaximizeButton" HorizontalAlignment="Right" Width="19" Click="MaximizeButton_Click" Margin="2,0">
                         <Image >
                             <Image.Style>
                                 <Style TargetType="Image">
@@ -37,7 +37,7 @@
                             </Image.Style>
                         </Image>
                     </Button>
-                    <Button x:Name="CloseButton" HorizontalAlignment="Right" Width="19" Click="ColseButton_Click" Margin="2,0">
+                    <Button ToolTip="Close" x:Name="CloseButton" HorizontalAlignment="Right" Width="19" Click="ColseButton_Click" Margin="2,0">
                         <Image Source="/JudgeSharp;component/IMG/close.png" />
                     </Button>
                 </StackPanel>
