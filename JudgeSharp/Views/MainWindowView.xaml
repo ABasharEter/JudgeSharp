@@ -1,0 +1,184 @@
+﻿<UserControl x:Class="JudgeSharp.Views.MainWindowView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:JudgeSharp.Views"
+             xmlns:vm="clr-namespace:JudgeSharp.ViewModels"
+             xmlns:core="clr-namespace:JudgeSharp.Core"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="900" Foreground="White">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="SubMenuBackgroundBrush" Color="#FF0B0B1B"/>
+    </UserControl.Resources>
+    <UserControl.DataContext>
+        <vm:MainWindowViewModel/>
+    </UserControl.DataContext>
+    <DockPanel>
+        <Menu  DockPanel.Dock="Top" Height="24" Background="#FF141430" Foreground="#FFECECEC" Margin="1,0">
+            <Menu.Resources>
+                <ControlTemplate x:Key="MenuItemControlTemplate1" TargetType="{x:Type MenuItem}">
+                    <Border x:Name="templateRoot" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" ContentSource="Icon" HorizontalAlignment="Center" Height="16" Margin="3" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" Width="16"/>
+                            <Path x:Name="GlyphPanel" Data="F1M10,1.2L4.7,9.1 4.5,9.1 0,5.2 1.3,3.5 4.3,6.1 8.3,0 10,1.2z" Fill="{TemplateBinding Foreground}" FlowDirection="LeftToRight" Margin="3" Visibility="Collapsed" VerticalAlignment="Center"/>
+                            <ContentPresenter ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" Grid.Column="1" ContentStringFormat="{TemplateBinding HeaderStringFormat}" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            <Popup x:Name="PART_Popup" AllowsTransparency="True" Focusable="False" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" Placement="Bottom">
+                                <Border x:Name="SubMenuBorder" BorderBrush="#FF999999" BorderThickness="1" Background="#FF0F0F1B" Padding="2">
+                                    <ScrollViewer x:Name="SubMenuScrollViewer" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                        <Grid RenderOptions.ClearTypeHint="Enabled">
+                                            <Canvas HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
+                                                <Rectangle x:Name="OpaqueRect" Fill="{Binding Background, ElementName=SubMenuBorder}" Height="{Binding ActualHeight, ElementName=SubMenuBorder}" Width="{Binding ActualWidth, ElementName=SubMenuBorder}"/>
+                                            </Canvas>
+                                            <Rectangle Fill="#FFD7D7D7" HorizontalAlignment="Left" Margin="29,2,0,2" Width="1"/>
+                                            <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Cycle" Grid.IsSharedSizeScope="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" KeyboardNavigation.TabNavigation="Cycle"/>
+                                        </Grid>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSuspendingPopupAnimation" Value="True">
+                            <Setter Property="PopupAnimation" TargetName="PART_Popup" Value="None"/>
+                        </Trigger>
+                        <Trigger Property="Icon" Value="{x:Null}">
+                            <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Visibility" TargetName="GlyphPanel" Value="Visible"/>
+                            <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter Property="Background" TargetName="templateRoot" Value="#3D26A0DA"/>
+                            <Setter Property="BorderBrush" TargetName="templateRoot" Value="#FF26A0DA"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="#FF707070"/>
+                            <Setter Property="Fill" TargetName="GlyphPanel" Value="#FF707070"/>
+                        </Trigger>
+                        <Trigger Property="CanContentScroll" SourceName="SubMenuScrollViewer" Value="False">
+                            <Setter Property="Canvas.Top" TargetName="OpaqueRect" Value="{Binding VerticalOffset, ElementName=SubMenuScrollViewer}"/>
+                            <Setter Property="Canvas.Left" TargetName="OpaqueRect" Value="{Binding HorizontalOffset, ElementName=SubMenuScrollViewer}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Menu.Resources>
+            <MenuItem Header="File" Foreground="#FFECECEC" Template="{DynamicResource MenuItemControlTemplate1}">
+                <MenuItem Header="New" Command="{Binding NewCommand}"/>
+                <MenuItem Header="Open" Command="{Binding OpenCommand}"/>
+                <MenuItem Header="Save" Command="{Binding SaveCommand}"/>
+                <MenuItem Header="Save As" Command="{Binding SaveAsCommand}"/>
+                <MenuItem Header="Close" Command="{Binding CloseCommand}"/>
+                <MenuItem Header="Exit"/>
+            </MenuItem>
+            <MenuItem Header="Edit" Foreground="#FFECECEC" Template="{DynamicResource MenuItemControlTemplate1}">
+                <MenuItem Header="Add Problem" Command="{Binding ProblemSet.AddEqualityProblemCommand}"/>
+                <MenuItem Header="Delete Problem"  Command="{Binding ProblemSet.RemoveProblemCommand}"/>
+            </MenuItem>
+
+            <MenuItem Header="Test" Foreground="#FFECECEC" Template="{DynamicResource MenuItemControlTemplate1}">
+                <ComboBox ItemsSource="{Binding Compilers}"  SelectedItem="{Binding SelectedCompiler}" Margin="5" ToolTip="Select compiler">
+                    <ComboBox.Resources>
+                        <DataTemplate DataType="{x:Type core:Compiler}">
+                            <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </ComboBox.Resources>
+                </ComboBox>
+                <MenuItem Header="Browse Source Files" Command="{Binding BrowseSourceFileCommand}"/>
+                <MenuItem Header="Solve" Command="{Binding SolveSelectedProblemCommand}"/>
+            </MenuItem>
+            <MenuItem Header="Help" Foreground="#FFECECEC" Template="{DynamicResource MenuItemControlTemplate1}">
+                <MenuItem Header="Open ReadMe.txt" Click="MenuItem_Click"/>
+                <MenuItem Header="About" Click="MenuItem_Click_1"/>
+            </MenuItem>
+        </Menu>
+        <Grid Height="24" DockPanel.Dock="Bottom">
+            <Border>
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Background" Value="#FF0081BD"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding State}" Value="Error">
+                                <Setter Property="Background" Value="#FFBD2B00"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding State}" Value="Running">
+                                <Setter Property="Background" Value="#FFBD8900"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
+            <TextBlock Margin="5,3" Text="{Binding StateText}" Foreground="White"/>
+        </Grid>
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="19*"/>
+                <ColumnDefinition Width="71*"/>
+            </Grid.ColumnDefinitions>
+            <ContentControl Grid.Column="1" Content="{Binding ProblemSet.SelectedProblem}">
+                <ContentControl.Resources>
+                    <DataTemplate DataType="{x:Type vm:EqualityCompareProblemViewModel}">
+                        <local:EqualityComperPoblemView/>
+                    </DataTemplate>
+                </ContentControl.Resources>
+            </ContentControl>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <DockPanel>
+                    <Grid DockPanel.Dock="Top" Margin="5,0">
+                        <TextBlock TextWrapping="Wrap"  Text="{Binding ProblemSet.Path}" Foreground="#FFE2E2E2" FontSize="14" FontFamily="Segoe UI Light"  />
+                    </Grid>
+                    <StackPanel DockPanel.Dock="Top" Height="32" Orientation="Horizontal" VerticalAlignment="Top">
+                        <Button Width="29" Margin="3" Command="{Binding ProblemSet.AddEqualityProblemCommand}" Foreground="White">
+                            <Image Margin="2" Source="/JudgeSharp;component/IMG/add-png.png" />
+                        </Button>
+                        <Button Width="29" Margin="3" Command="{Binding ProblemSet.RemoveProblemCommand}">
+                            <Image Margin="2" Source="/JudgeSharp;component/IMG/remove-png.png" />
+                        </Button>
+                    </StackPanel>
+                    <ListView DockPanel.Dock="Top" Margin="5" SelectedItem="{Binding ProblemSet.SelectedProblem}" ItemsSource="{Binding ProblemSet.Problems}" Background="#FF333333" Foreground="White">
+                        <ListView.Resources>
+                            <DataTemplate DataType="{x:Type vm:ProblemViewModel}">
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </ListView.Resources>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Style.Resources>
+                                    <!-- Foreground for Selected ListViewItem -->
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
+                                     Color="AliceBlue"/>
+                                    <!-- Background for Selected ListViewItem -->
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                     Color="#FF3E3E42"/>
+                                </Style.Resources>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+                </DockPanel>
+                <StackPanel Grid.Row="2" VerticalAlignment="Bottom">
+                    <TextBlock Text="Select compiler" Foreground="#FFE6E6E6" TextAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding Compilers}"  SelectedItem="{Binding SelectedCompiler}" Margin="5" ToolTip="Select compiler">
+                        <ComboBox.Resources>
+                            <DataTemplate DataType="{x:Type core:Compiler}">
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </ComboBox.Resources>
+                    </ComboBox>
+                    <TextBlock Text="Source Files" Foreground="#FFE6E6E6" TextAlignment="Center"/>
+                    <TextBox Text="{Binding SourceFile}" Margin="5" />
+                    <Button Content="Browse Source Files" Margin="5" Command="{Binding BrowseSourceFileCommand}"/>
+                    <Button Content="Solve" Margin="5" Command="{Binding SolveSelectedProblemCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </DockPanel>
+</UserControl>

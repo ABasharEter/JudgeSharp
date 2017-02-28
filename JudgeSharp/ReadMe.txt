@@ -1,9 +1,8 @@
-# JudgeSharp
-This project Judge Sharp made by Ahmad Bashar Eter to provide an     
+﻿This project Judge Sharp made by Ahmad Bashar Eter to provide an     
 trustworthy, easy to use, offline tool to test problem-solving contestants.    
 
 You can create a new problem set or open some a previously created problem set and solve it.
-The power of this project is shown by the fact that you can lock your problem and the the contestant won�t know the real output
+The power of this project is shown by the fact that you can lock your problem and the the contestant won’t know the real output
 unless he solves the problem. This is because the problem output is encrypted by a password that has been set when the problem was created.
 When the contestant solves the problem, the password will be shown as well as the true output.
 We can describe the way of encryption as follows:
@@ -14,6 +13,7 @@ We can describe the way of encryption as follows:
 
 Any answer asks me on my email below.
 Feel free to fork this project and improve it!
+GitHub: https://github.com/BasharKernel/JudgeSharp
 
 This program is free software: you can redistribute it and/or modify          
 it under the terms of the GNU General Public License version 3.               

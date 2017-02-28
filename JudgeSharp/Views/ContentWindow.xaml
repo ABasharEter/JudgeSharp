@@ -1,0 +1,64 @@
+﻿<Window x:Class="JudgeSharp.Views.ContentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:JudgeSharp.Views"
+        mc:Ignorable="d"
+        SourceInitialized="Window_SourceInitialized" Height="300" Width="300" AllowsTransparency="True" WindowStyle="None" Background="{x:Null}" Name="window" Closing="window_Closing">
+    <Grid x:Name="back">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Rectangle Grid.RowSpan="2" Fill="#FF1A1A2B" Stroke="#FF3399FF" RadiusX="3" RadiusY="3"/>
+        <Rectangle Grid.RowSpan="2" Fill="#FF1A1A2B" Stroke="#FF3399FF" RadiusX="3" RadiusY="3"/>
+        <Border x:Name="TitelBarBorder" Margin="1,1,1,0" Height="30" Background="#FF141430" BorderThickness="0" CornerRadius="3,3,0,0" MouseDown="Border_MouseDown" MouseMove="Border_MouseMove" MouseUp="Border_MouseUp">
+            <Grid>
+                <StackPanel Margin="5,0,72,0" Orientation="Horizontal">
+                    <Image x:Name="Image" Source="{Binding Icon, ElementName=window}" HorizontalAlignment="Left"/>
+                    <TextBlock Margin="3,3" Text="{Binding Title, ElementName=window}" IsHitTestVisible="False" Foreground="#FFDEDEDE" FontFamily="Nirmala UI Semilight" FontSize="16"/>
+                </StackPanel>
+                <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Right" >
+                    <Button x:Name="MinimizeButton" HorizontalAlignment="Right" Width="19" Click="MinimizeButton_Click"  Margin="2,0">
+                        <Image Source="/JudgeSharp;component/IMG/minimize-png.png" />
+                    </Button>
+                    <Button x:Name="MaximizeButton" HorizontalAlignment="Right" Width="19" Click="MaximizeButton_Click" Margin="2,0">
+                        <Image >
+                            <Image.Style>
+                                <Style TargetType="Image">
+                                    <Setter Property="Source" Value="/JudgeSharp;component/IMG/maximize-png.png"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=window,Path=WindowState}" Value="Maximized">
+                                            <Setter Property="Source" Value="/JudgeSharp;component/IMG/restor-png.png"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </Button>
+                    <Button x:Name="CloseButton" HorizontalAlignment="Right" Width="19" Click="ColseButton_Click" Margin="2,0">
+                        <Image Source="/JudgeSharp;component/IMG/close.png" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <ContentControl x:Name="ContentControl"  Grid.Row="1"/>
+        <Grid.Style>
+            <Style TargetType="Grid">
+                <Setter Property="Margin" Value="10"/>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect Color="Cyan" ShadowDepth="0" BlurRadius="10"/>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding ElementName=window,Path=WindowState}" Value="Maximized">
+                        <Setter Property="Margin" Value="-1"/>
+                        <Setter Property="Effect" Value="{x:Null}"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Style>
+    </Grid>
+</Window>
