@@ -15,6 +15,10 @@ Any answer asks me on my email below.
 Feel free to fork this project and improve it!
 GitHub: https://github.com/BasharKernel/JudgeSharp
 
+NOTE: This program uses the GNU G++ Compiler in order to use it correctly you have to install the G++ Compiler and configure its path.
+      If you are working on windows machine install the MinGW form http://www.mingw.org/ which contains the GNU G++ Compiler then 
+      add its bin directory to the PATH environment variable.
+
 This program is free software: you can redistribute it and/or modify          
 it under the terms of the GNU General Public License version 3.               
 This program is distributed in the hope that it will be useful, but WITHOUT   
