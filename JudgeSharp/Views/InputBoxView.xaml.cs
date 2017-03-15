@@ -47,7 +47,6 @@ namespace JudgeSharp.Views
         public static string Show(string lable,string title)
         {
             InputBoxView view = new InputBoxView();
-            bool result = false;
             ContentWindow window = ContentWindow.Create(view, 400, 150, false, false, false);
             window.Title = title;
             view.HeaderText.Text = lable;

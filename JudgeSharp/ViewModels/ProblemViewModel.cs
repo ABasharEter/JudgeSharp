@@ -45,7 +45,7 @@ namespace JudgeSharp.ViewModels
         public static ProblemViewModel CreateFromStream(Stream s)
         {
             //TODO: add the specifications of other type of problems here
-            BinaryReader br = new BinaryReader(s, Encoding.Default, true);
+            BinaryReader br = new BinaryReader(s);
             Guid id = new Guid(br.ReadBytes(16));
             if( id == typeof(EqualityCompareProblemViewModel).GUID)
             {
@@ -60,9 +60,10 @@ namespace JudgeSharp.ViewModels
 
         public static void WriteProblemHeader(Stream s,ProblemViewModel problem)
         {
-            BinaryWriter br = new BinaryWriter(s, Encoding.Default, true);
+            BinaryWriter br = new BinaryWriter(s);
             Guid id = problem.GetType().GUID;
             br.Write(id.ToByteArray());
+            br.Flush();
         }
 
 
@@ -74,7 +75,7 @@ namespace JudgeSharp.ViewModels
 
         // Using a DependencyProperty as the backing store for MemoryLimit.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MemoryLimitProperty =
-            DependencyProperty.Register("MemoryLimit", typeof(long), typeof(ProblemSetViewModel), new PropertyMetadata(10L));
+            DependencyProperty.Register("MemoryLimit", typeof(long), typeof(ProblemViewModel), new PropertyMetadata(64L));
         
         public double TimeLimit
         {
@@ -87,6 +88,31 @@ namespace JudgeSharp.ViewModels
             DependencyProperty.Register("TimeLimit", typeof(double), typeof(ProblemViewModel), new PropertyMetadata(500.0));
         
 
+        public DateTime? SolutionTime
+        {
+            get { return (DateTime?)GetValue(SolutionTimeProperty); }
+            private set { SetValue(SolutionTimeKey, value); }
+        }
+
+        private static readonly DependencyPropertyKey SolutionTimeKey =
+            DependencyProperty.RegisterReadOnly("SolutionTime", typeof(DateTime?), typeof(ProblemViewModel), new PropertyMetadata(null));
+
+        // Using a DependencyProperty as the backing store for SolutionTime.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SolutionTimeProperty = SolutionTimeKey.DependencyProperty;
+        
+
+        public int Points
+        {
+            get { return (int)GetValue(PointsProperty); }
+            set { SetValue(PointsProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Points.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PointsProperty =
+            DependencyProperty.Register("Points", typeof(int), typeof(ProblemViewModel), new PropertyMetadata(10));
+        
+        
+
         public ProblemState State
         {
             get { return (ProblemState)GetValue(StateProperty); }
@@ -97,7 +123,6 @@ namespace JudgeSharp.ViewModels
 
         // Using a DependencyProperty as the backing store for State.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty StateProperty = StateKey.DependencyProperty;
-
         
 
         public string StateText
@@ -296,7 +321,7 @@ namespace JudgeSharp.ViewModels
                     string password = ProblemSpecification.GetPassword(result.Output);
                     if (password == null)
                     {
-                        StateText = string.Format("Error in problem file. Must Be accepted. Time:{0} Memory:{1}", result.ResourceUsage.TimeUsage, result.ResourceUsage.MemoryUsage);
+                        StateText = string.Format("Error in problem file or the probelem have no test cases. Must Be accepted. Time:{0} Memory:{1}", result.ResourceUsage.TimeUsage, result.ResourceUsage.MemoryUsage);
                         State = ProblemState.FailedToSolve;
                     }
                     else

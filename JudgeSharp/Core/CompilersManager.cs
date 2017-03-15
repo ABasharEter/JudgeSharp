@@ -28,6 +28,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JudgeSharp.Compilers;
+using System.Windows;
+
 namespace JudgeSharp.Core
 {
     public class CompilersManager
@@ -36,7 +38,16 @@ namespace JudgeSharp.Core
         {
             get
             {
-                yield return new GCCCPPCompiler();
+                Compiler c = null;
+                try
+                {
+                    c = new GCCCPPCompiler();
+                }
+                catch(Exception e)
+                {
+                    MessageBox.Show(e.Message, "Error", MessageBoxButton.OK);
+                }
+                yield return c;
             }
         }
 

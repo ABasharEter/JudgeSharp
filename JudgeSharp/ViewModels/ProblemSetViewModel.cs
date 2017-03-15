@@ -81,8 +81,17 @@ namespace JudgeSharp.ViewModels
                 isDirty = value;
             }
         }
-        //TODO: If you implements another type of problems then add a command to ad it to the problem set here
+        public bool IsLocked
+        {
+            get
+            {
+                return Problems.Any(p => p.IsLocked);
+            }
+        }
 
+
+        //TODO: If you implements another type of problems then add a command to ad it to the problem set here
+        
         public RelayCommand AddEqualityProblemCommand { get; private set; }
         public RelayCommand RemoveProblemCommand { get; private set; }
 
@@ -92,8 +101,8 @@ namespace JudgeSharp.ViewModels
         {
             //Don't put the initialization in the dependency property default value it will be the same for all instances of this class
             Problems = new ObservableCollection<ProblemViewModel>();
-            AddEqualityProblemCommand = new RelayCommand(p => OnAddEqualityProblem());
-            RemoveProblemCommand = new RelayCommand(p => OnRemoveProblem());
+            AddEqualityProblemCommand = new RelayCommand(p => OnAddEqualityProblem(), p => !IsLocked);
+            RemoveProblemCommand = new RelayCommand(p => OnRemoveProblem(), p => !IsLocked);
             Name = "New problem set";
         }
 
@@ -124,7 +133,7 @@ namespace JudgeSharp.ViewModels
                 byte[] data = null;
                 ProblemViewModel[] problems = Problems.ToArray();
                 string path = Path;
-                if (!await Task.Run(() =>
+                if (!await Task.Factory.StartNew(() =>
                  {
                      MemoryStream ms = new MemoryStream();
                      foreach (var problem in problems)
@@ -169,10 +178,12 @@ namespace JudgeSharp.ViewModels
                 while (ms.Position < ms.Length)
                 {
                     ProblemViewModel problem = null;
-                    await Dispatcher.BeginInvoke((Action)(() => { problem = ProblemViewModel.CreateFromStream(ms); }));
+                    Dispatcher.BeginInvoke((Action)(() => {
+                        problem = ProblemViewModel.CreateFromStream(ms);
+                    })).Wait();
                     if (problem == null)
                         return false;
-                    if (!await Task.Run(() =>
+                    if (!await Task.Factory.StartNew(() =>
                      {
                          if (problem == null || !problem.Load(ms))
                              return false;
@@ -182,7 +193,7 @@ namespace JudgeSharp.ViewModels
                     ps.Add(problem);
                 }
                 ms.Close();
-                await Dispatcher.BeginInvoke((Action)(() => { 
+                Dispatcher.BeginInvoke((Action)(() => { 
                 Problems.Clear();
                 foreach (var problem in ps)
                 {

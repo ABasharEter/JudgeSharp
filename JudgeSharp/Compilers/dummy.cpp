@@ -27,7 +27,7 @@
 using namespace std;
 
 const int static_memory = 50*1024/ sizeof(long long);
-const int iteration_count = 100000;
+const int iteration_count = 1000000;
 long long a[static_memory][1024];
 int main()
 {

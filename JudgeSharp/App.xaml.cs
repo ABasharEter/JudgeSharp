@@ -30,7 +30,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using JudgeSharp.Views;
-
+using JudgeSharp.ViewModels;
 
 namespace JudgeSharp
 {
@@ -45,6 +45,11 @@ namespace JudgeSharp
             MainWindowView view = new MainWindowView();
             MainWindow = ContentWindow.Create(view,1280,720);
             MainWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            if(e.Args.Length > 0 && System.IO.File.Exists(e.Args[0]) && System.IO.Path.GetExtension(e.Args[0]).ToLower() == ".jsps")
+            {
+                MainWindowViewModel vm = view.DataContext as MainWindowViewModel;
+                vm.Open(e.Args[0]);
+            }  
             MainWindow.Show();
         }
     }

@@ -84,7 +84,7 @@ namespace JudgeSharp.Core
         {
             try
             {
-                BinaryReader br = new BinaryReader(stream, Encoding.Default, true);
+                BinaryReader br = new BinaryReader(stream);
                 Name = br.ReadString();
                 TimeLimit = br.ReadDouble();
                 MemoryLimit = br.ReadInt64();
@@ -114,7 +114,7 @@ namespace JudgeSharp.Core
         {
             try
             {
-                BinaryWriter bw = new BinaryWriter(stream, Encoding.Default, true);
+                BinaryWriter bw = new BinaryWriter(stream);
                 bw.Write(Name);
                 bw.Write(TimeLimit);
                 bw.Write(MemoryLimit);
@@ -134,6 +134,7 @@ namespace JudgeSharp.Core
                     bw.Write(DocumentData.Length);
                     bw.Write(DocumentData);
                 }
+                bw.Flush();
                 return true;
             }
             catch

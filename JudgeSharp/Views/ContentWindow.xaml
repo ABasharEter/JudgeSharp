@@ -5,15 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:JudgeSharp.Views"
         mc:Ignorable="d"
-        SourceInitialized="Window_SourceInitialized" Height="300" Width="300" AllowsTransparency="True" WindowStyle="None" Background="{x:Null}" Name="window" Closing="window_Closing">
+        
+        SourceInitialized="Window_SourceInitialized" Height="300" Width="300" AllowsTransparency="True" WindowStyle="None" Background="{x:Null}" Name="window" Closing="window_Closing" Icon="/JudgeSharp;component/IMG/Main.png">
     <Grid x:Name="back">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Rectangle Grid.RowSpan="2" Fill="#FF1A1A2B" Stroke="#FF3399FF" RadiusX="3" RadiusY="3"/>
-        <Rectangle Grid.RowSpan="2" Fill="#FF1A1A2B" Stroke="#FF3399FF" RadiusX="3" RadiusY="3"/>
-        <Border x:Name="TitelBarBorder" Margin="1,1,1,0" Height="30" Background="#FF141430" BorderThickness="0" CornerRadius="3,3,0,0" MouseDown="Border_MouseDown" MouseMove="Border_MouseMove" MouseUp="Border_MouseUp">
+        <Rectangle Grid.RowSpan="2" Stroke="#FF3399FF" RadiusX="3" RadiusY="3">
+            <Rectangle.Fill>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="0"/>
+                    <GradientStop Color="#FF142646" Offset="1"/>
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+        <Border x:Name="TitelBarBorder" Margin="1,1,1,0" Height="30" BorderThickness="0" CornerRadius="3,3,0,0" MouseDown="Border_MouseDown" MouseMove="Border_MouseMove" MouseUp="Border_MouseUp" Background="#FF0B162B">
             <Grid>
                 <StackPanel Margin="5,0,72,0" Orientation="Horizontal">
                     <Image x:Name="Image" Source="{Binding Icon, ElementName=window}" HorizontalAlignment="Left"/>
@@ -43,7 +51,14 @@
                 </StackPanel>
             </Grid>
         </Border>
-        <ContentControl x:Name="ContentControl"  Grid.Row="1"/>
+        <ContentControl x:Name="ContentControl"  Grid.Row="1" Margin="-1,0,1,0">
+            <ContentControl.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="0"/>
+                    <GradientStop Color="#FF142646" Offset="1"/>
+                </LinearGradientBrush>
+            </ContentControl.Background>
+        </ContentControl>
         <Grid.Style>
             <Style TargetType="Grid">
                 <Setter Property="Margin" Value="10"/>

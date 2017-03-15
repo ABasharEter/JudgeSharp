@@ -53,11 +53,12 @@ namespace JudgeSharp.Core
             stream.Close();
             PackageStore.RemovePackage(uri);
             MemoryStream mainstream = new MemoryStream();
-            BinaryWriter br = new BinaryWriter(mainstream, Encoding.Default, true);
+            BinaryWriter br = new BinaryWriter(mainstream);
             byte[] data = stream.ToArray();
             br.Write(uriString);
             br.Write(data.Length);
             br.Write(data);
+            br.Flush();
             mainstream.Close();
             return mainstream.ToArray();
         }
@@ -66,7 +67,7 @@ namespace JudgeSharp.Core
         {
             Package package;
             Stream stream = new MemoryStream(bytes);
-            BinaryReader br = new BinaryReader(stream, Encoding.Default, true);
+            BinaryReader br = new BinaryReader(stream);
             string uriString = br.ReadString();
             int length = br.ReadInt32();
             byte[] docData = br.ReadBytes(length);
@@ -74,6 +75,8 @@ namespace JudgeSharp.Core
             stream = new MemoryStream(docData);
             package = Package.Open(stream);
             Uri uri = new Uri(uriString);
+            if (PackageStore.GetPackage(uri) != null)
+                PackageStore.RemovePackage(uri);
             PackageStore.AddPackage(uri, package);
             XpsDocument xpsDocument = new XpsDocument(package, CompressionOption.Maximum, uriString);
             return xpsDocument.GetFixedDocumentSequence();
@@ -98,10 +101,11 @@ namespace JudgeSharp.Core
         {
             string hash = EncryptionHelper.FastHash(data);
             MemoryStream memoryStream = new MemoryStream();
-            BinaryWriter bw = new BinaryWriter(memoryStream,Encoding.Default,true);
+            BinaryWriter bw = new BinaryWriter(memoryStream);
             bw.Write(hash);
             bw.Write(data.Length);
             bw.Write(data);
+            bw.Flush();
             memoryStream.Close();
             return memoryStream.ToArray();
         }
@@ -109,15 +113,16 @@ namespace JudgeSharp.Core
         {
             try
             {
-                MemoryStream memoryStream = new MemoryStream(data);
-                BinaryReader br = new BinaryReader(memoryStream, Encoding.Default, true);
-                string hash = br.ReadString();
-                int length = br.ReadInt32();
-                byte[] unpackdata = br.ReadBytes(length);
-                if (EncryptionHelper.FastHashValidation(unpackdata, hash))
-                    return unpackdata;
-                else
-                    return null;
+                using (MemoryStream memoryStream = new MemoryStream(data))
+                {
+                    BinaryReader br = new BinaryReader(memoryStream);
+                    string hash = br.ReadString();
+                    int length = br.ReadInt32();
+                    byte[] unpackdata = br.ReadBytes(length);
+                    if (EncryptionHelper.FastHashValidation(unpackdata, hash))
+                        return unpackdata;
+                }
+                return null;
             }
             catch
             {

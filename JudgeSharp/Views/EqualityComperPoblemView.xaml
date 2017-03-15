@@ -5,7 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:JudgeSharp.Views"
-             xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" xmlns:Documents="clr-namespace:System.Windows.Documents;assembly=PresentationUI" x:Class="JudgeSharp.Views.EqualityComperPoblemView"
+             xmlns:Documents="clr-namespace:System.Windows.Documents;assembly=PresentationUI"
+             x:Class="JudgeSharp.Views.EqualityComperPoblemView"
              mc:Ignorable="d" 
              d:DesignHeight="1000" d:DesignWidth="1000"
              FontFamily="Nirmala UI Semilight" x:Name="uc">
@@ -33,7 +34,7 @@
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                     <TextBlock Text="Memory Limit: " Foreground="White" FontSize="14"/>
                     <Grid>
-                        <TextBlock Text="{Binding MemoryLimit}" FontSize="14" Foreground="White"/>
+                        <TextBlock Text="{Binding MemoryLimit,UpdateSourceTrigger=PropertyChanged}" FontSize="14" Foreground="White"/>
                         <TextBox MinWidth="30" TextAlignment="Center" Text="{Binding MemoryLimit}" FontSize="14" Visibility="{Binding IsEditing, Converter={StaticResource bool2Vis}}" Background="#FF333333" Foreground="White" />
                     </Grid>
                     <TextBlock Text=" MB" Foreground="White" FontSize="14"/>
@@ -41,14 +42,14 @@
                 <StackPanel HorizontalAlignment="Center" Grid.Column="1" Orientation="Horizontal">
                     <TextBlock MinWidth="30" Text="Time Limit: " Foreground="White" FontSize="14"/>
                     <Grid>
-                        <TextBlock Text="{Binding TimeLimit}" Foreground="White" FontSize="14"/>
+                        <TextBlock Text="{Binding TimeLimit,UpdateSourceTrigger=PropertyChanged}" Foreground="White" FontSize="14"/>
                         <TextBox MinWidth="30" Text="{Binding TimeLimit}" TextAlignment="Center" FontSize="14" Visibility="{Binding IsEditing, Converter={StaticResource bool2Vis}}" Background="#FF333333" Foreground="White" />
                     </Grid>
                     <TextBlock Text=" ms" Foreground="White" FontSize="14"/>
                 </StackPanel>
             </Grid>
             <Grid MaxHeight="200">
-                <local:ColorBar x:Name="scb" DotsCount="150" d:IsHidden="False">
+                <local:ColorBar x:Name="scb" DotsCount="100" d:IsHidden="False">
                     <local:ColorBar.Style>
                         <Style TargetType="{x:Type local:ColorBar}">
                             <Setter Property="Color" Value="LightGoldenrodYellow"/>
@@ -194,9 +195,9 @@
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
                                     <Grid>
-                                        <Themes:DataGridHeaderBorder BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" IsClickable="{TemplateBinding CanUserSort}" IsPressed="{TemplateBinding IsPressed}" IsHovered="{TemplateBinding IsMouseOver}" Padding="{TemplateBinding Padding}" SortDirection="{TemplateBinding SortDirection}" SeparatorBrush="{TemplateBinding SeparatorBrush}" SeparatorVisibility="{TemplateBinding SeparatorVisibility}" Background="#FF333337">
+                                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"  Padding="{TemplateBinding Padding}"  Background="#FF333337">
                                             <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="3"/>
-                                        </Themes:DataGridHeaderBorder>
+                                        </Border>
                                         <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left" Style="{StaticResource ColumnHeaderGripperStyle}"/>
                                         <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right" Style="{StaticResource ColumnHeaderGripperStyle}"/>
                                     </Grid>
@@ -236,11 +237,6 @@
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
-                        <Style.Triggers>
-                            <Trigger Property="IsNewItem" Value="True">
-                                <Setter Property="Margin" Value="{Binding NewItemMargin, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>
-                            </Trigger>
-                        </Style.Triggers>
                     </Style>
                 </DataGrid.Resources>
 
@@ -270,8 +266,6 @@
                 <DataGrid.Style>
                     <Style TargetType="{x:Type DataGrid}">
                         <Setter Property="Visibility" Value="Collapsed"/>
-
-
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding State}" Value="Solved">
                                 <Setter Property="Visibility" Value="Visible"/>
@@ -289,11 +283,15 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Button Content="Add TestCase" Command="{Binding AddTestCaseDocumentCommand}" Grid.Column="0" Margin="3"/>
                 <Button Content="Delete TestCase" Command="{Binding DeleteTestCaseDocumentCommand}" Grid.Column="1" Margin="3"/>
                 <Button Content="Load TestCase Input" Command="{Binding LoadInpputTestFileCommand}" Grid.Column="2" Margin="3"/>
                 <Button Content="Load TestCase Output" Command="{Binding LoadOutputTestFileCommand}" Grid.Column="3" Margin="3"/>
+                <Button Content="Load TestCase Input Batch" Command="{Binding LoadInpputBatchTestFileCommand}" Grid.Column="4" Margin="3"/>
+                <Button Content="Load TestCase Output Batch" Command="{Binding LoadOutputBatchTestFileCommand}" Grid.Column="5" Margin="3"/>
             </Grid>
         </StackPanel>
     </ScrollViewer>

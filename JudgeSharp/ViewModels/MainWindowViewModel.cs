@@ -140,7 +140,7 @@ namespace JudgeSharp.ViewModels
         {
             Name = "Judge Sharp";
 
-            NewCommand = new RelayCommand(p => OnNew());
+            NewCommand = new RelayCommand(p => { try { OnNew(); } catch (Exception e) { MessageBox.Show(e.Message); } });
             OpenCommand = new RelayCommand(p => OnOpen());
             SaveCommand = new RelayCommand(p => OnSave(), p => ProblemSet != null && ProblemSet.IsDirty);
             SaveAsCommand = new RelayCommand(p => OnSaveAs(), p => ProblemSet != null);
@@ -179,7 +179,7 @@ namespace JudgeSharp.ViewModels
             State = MainWindowStatus.Running;
             ProblemSpecification ps = ProblemSet.SelectedProblem.ProblemSpecification;
             Compiler c = SelectedCompiler;
-            var t = Task.Run(() =>
+            var t = Task.Factory.StartNew(() =>
              tester.TestFiles(sourceFiles, ps, c));
             t.ContinueWith((task) =>
             {
@@ -212,7 +212,7 @@ namespace JudgeSharp.ViewModels
                     return false;
                 else if(r == MessageBoxResult.Yes)
                 {
-                    if (! await OnSave().ConfigureAwait(false))
+                    if (! await OnSave())
                         return false;
                 }
             }
@@ -233,7 +233,7 @@ namespace JudgeSharp.ViewModels
                 State = MainWindowStatus.Running;
                 StateText = "Saving Problem Set";
                 var result = await ProblemSet.SaveAsync().ConfigureAwait(false);
-                await Dispatcher.BeginInvoke((Action)(() =>
+                Dispatcher.BeginInvoke((Action)(() =>
                 {
                     if (result)
                     {
@@ -260,7 +260,7 @@ namespace JudgeSharp.ViewModels
                 State = MainWindowStatus.Running;
                 StateText = "Saving Problem Set";
                 var result = await ProblemSet.SaveAsync().ConfigureAwait(false);
-                await Dispatcher.BeginInvoke((Action)(() =>
+                Dispatcher.BeginInvoke((Action)(() =>
                 {
                     if (result)
                     {
@@ -283,44 +283,50 @@ namespace JudgeSharp.ViewModels
 
         private async void OnOpen()
         {
-            if(await OnNew().ConfigureAwait(false))
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Judge Sharp Problem Set (*.jsps)|*.jsps";
+            var r = ofd.ShowDialog();
+            if (r.HasValue && r.Value)
             {
-                OpenFileDialog ofd = new OpenFileDialog();
-                ofd.Filter = "Judge Sharp Problem Set (*.jsps)|*.jsps";
-                var r = ofd.ShowDialog();
-                if(r.HasValue && r.Value)
+                Open(ofd.FileName);
+            }
+        }
+        public async void Open(string path)
+        {
+            if (await OnNew().ConfigureAwait(false))
+            {
+                ProblemSet.Path = path;
+                State = MainWindowStatus.Running;
+                StateText = "Opening Problem Set";
+                var result = await ProblemSet.LoadAsync().ConfigureAwait(false);
+                Dispatcher.BeginInvoke((Action)(() =>
                 {
-                    ProblemSet.Path = ofd.FileName;
-
-                    State = MainWindowStatus.Running;
-                    StateText = "Opening Problem Set";
-                    var result = await ProblemSet.LoadAsync().ConfigureAwait(false);
-                    await Dispatcher.BeginInvoke((Action)(() =>
+                    if (result)
                     {
-                        if (result)
-                        {
-                            State = MainWindowStatus.Ready;
-                            StateText = "Problem Set Opened";
-                        }
-                        else
-                        {
-                            State = MainWindowStatus.Error;
-                            StateText = "Failed to Open Problem Set";
-                        }
+                        State = MainWindowStatus.Ready;
+                        StateText = "Problem Set Opened";
+                    }
+                    else
+                    {
+                        State = MainWindowStatus.Error;
+                        StateText = "Failed to Open Problem Set";
+                    }
 
-                    }));
-                }
+                }));
             }
         }
 
         private async Task<bool> OnNew()
         {
-            if (! await OnClose())
+            
+            if (!await OnClose())
                 return false;
             ProblemSet = new ProblemSetViewModel();
             State = MainWindowStatus.Ready;
             StateText = "Ready";
+            
             return true;
+
         }
 
         public async Task<bool> Close()

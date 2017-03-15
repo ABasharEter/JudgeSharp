@@ -15,7 +15,7 @@
         <vm:MainWindowViewModel/>
     </UserControl.DataContext>
     <DockPanel>
-        <Menu  DockPanel.Dock="Top" Height="24" Background="#FF141430" Foreground="#FFECECEC" Margin="1,0">
+        <Menu  DockPanel.Dock="Top" Height="24" Background="#FF020B19" Foreground="#FFECECEC" Margin="1,0">
             <Menu.Resources>
                 <ControlTemplate x:Key="MenuItemControlTemplate1" TargetType="{x:Type MenuItem}">
                     <Border x:Name="templateRoot" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
@@ -127,6 +127,7 @@
                     </DataTemplate>
                 </ContentControl.Resources>
             </ContentControl>
+            <GridSplitter x:Name="gridSplitter" HorizontalAlignment="Left" Width="5" Background="#FF020B19" Grid.Column="1"/>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition/>
@@ -144,28 +145,52 @@
                             <Image Margin="2" Source="/JudgeSharp;component/IMG/remove-png.png" />
                         </Button>
                     </StackPanel>
-                    <ListView DockPanel.Dock="Top" Margin="5" SelectedItem="{Binding ProblemSet.SelectedProblem}" ItemsSource="{Binding ProblemSet.Problems}" Background="#FF333333" Foreground="White">
-                        <ListView.Resources>
-                            <DataTemplate DataType="{x:Type vm:ProblemViewModel}">
-                                <TextBlock Text="{Binding Name}"/>
-                            </DataTemplate>
-                        </ListView.Resources>
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListViewItem}">
-                                <Style.Resources>
-                                    <!-- Foreground for Selected ListViewItem -->
-                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
-                                     Color="AliceBlue"/>
-                                    <!-- Background for Selected ListViewItem -->
-                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                                     Color="#FF3E3E42"/>
-                                </Style.Resources>
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                    </ListView>
+                    <Grid Margin="5">
+                        <Rectangle/>
+                        <ListView SelectedItem="{Binding ProblemSet.SelectedProblem}" ItemsSource="{Binding ProblemSet.Problems}" Foreground="White" BorderBrush="#FF0F203C" SelectionChanged="ListView_SelectionChanged" Margin="-2,0,2,2">
+                            <ListView.Resources>
+                                <DataTemplate DataType="{x:Type vm:ProblemViewModel}">
+                                    <DockPanel>
+                                        <Image DockPanel.Dock="Right" Height="24" Stretch="Uniform">
+                                            <Image.Style>
+                                                <Style TargetType="Image">
+                                                    <Setter Property="Source" Value="/JudgeSharp;component/IMG/gray-dot-png.png"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding State}" Value="Solved">
+                                                            <Setter Property="Source" Value="/JudgeSharp;component/IMG/green-dot-png.png"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding State}" Value="FailedToSolve">
+                                                            <Setter Property="Source" Value="/JudgeSharp;component/IMG/red-dot-png.png"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Image.Style>
+                                        </Image>
+                                        <TextBlock DockPanel.Dock="Left" Text="{Binding Name}"/>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListView.Resources>
+                            <ListView.Background>
+                                <ImageBrush ImageSource="/JudgeSharp;component/IMG/LOGO W.png" Stretch="Uniform" Opacity="0.4"/>
+                            </ListView.Background>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Style.Resources>
+                                        <!-- Foreground for Selected ListViewItem -->
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
+                                            Color="AliceBlue"/>
+                                        <!-- Background for Selected ListViewItem -->
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                            Color="#FF3E3E42"/>
+                                    </Style.Resources>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+                    </Grid>
                 </DockPanel>
                 <StackPanel Grid.Row="2" VerticalAlignment="Bottom">
-                    <TextBlock Text="Select compiler" Foreground="#FFE6E6E6" TextAlignment="Center"/>
+                    <TextBlock Text="Select compiler" Foreground="#FFE6E6E6" TextAlignment="Center" FontWeight="Bold"/>
                     <ComboBox ItemsSource="{Binding Compilers}"  SelectedItem="{Binding SelectedCompiler}" Margin="5" ToolTip="Select compiler">
                         <ComboBox.Resources>
                             <DataTemplate DataType="{x:Type core:Compiler}">
@@ -173,10 +198,10 @@
                             </DataTemplate>
                         </ComboBox.Resources>
                     </ComboBox>
-                    <TextBlock Text="Source Files" Foreground="#FFE6E6E6" TextAlignment="Center"/>
+                    <TextBlock Text="Source Files" Foreground="#FFE6E6E6" TextAlignment="Center" FontWeight="Bold"/>
                     <TextBox Text="{Binding SourceFile}" Margin="5" />
                     <Button Content="Browse Source Files" Margin="5" Command="{Binding BrowseSourceFileCommand}"/>
-                    <Button Content="Solve" Margin="5" Command="{Binding SolveSelectedProblemCommand}"/>
+                    <Button Content="Solve" Margin="5" Command="{Binding SolveSelectedProblemCommand}" FontWeight="Bold"/>
                 </StackPanel>
             </Grid>
         </Grid>

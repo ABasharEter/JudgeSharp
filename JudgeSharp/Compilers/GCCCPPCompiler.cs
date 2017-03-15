@@ -31,12 +31,16 @@ using System.Threading.Tasks;
 using JudgeSharp.Core;
 using System.IO;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace JudgeSharp.Compilers
 {
     public class GCCCPPCompiler : Compiler
     {
-
+        public static readonly string x64GppPath = @"MinGW64\bin";
+        public static readonly string x32GppPath = @"MinGW64\bin";
+        public static readonly int CompilationTimeOut = 10000;
+        public static readonly int TryCount = 5;
         public override string Name
         {
             get
@@ -49,7 +53,9 @@ namespace JudgeSharp.Compilers
         {
             try
             {
-
+                string gppPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), (Environment.Is64BitOperatingSystem) ? x64GppPath : x32GppPath);
+                string path = Environment.GetEnvironmentVariable("Path").Trim(';') + @";" + gppPath + ";";
+                Environment.SetEnvironmentVariable("Path", path);
                 string code = ReadDummyFile();
                 string tempsource = Path.Combine(Path.GetTempPath(), "dummy.cpp");
                 File.WriteAllText(tempsource, code);
@@ -87,43 +93,53 @@ namespace JudgeSharp.Compilers
 
         public override string Compile(string[] sourceFiles, string exeFile)
         {
-            try
+            string exceptionMessage = null;
+            int tryNumber = 0;
+            do
             {
-                Process p = new Process();
-                string workingDire = Path.GetDirectoryName(exeFile);
-                p.StartInfo.FileName = "g++";
-                p.StartInfo.Arguments = "-Wall -std=c++11 -o \"" + Path.GetFileName(exeFile) + "\" ";
-                foreach (var source in sourceFiles)
+                try
                 {
-                    p.StartInfo.Arguments += string.Format("\"{0}\"", source);
-                }
-                p.StartInfo.UseShellExecute = false;
-                p.StartInfo.RedirectStandardError = true;
-                p.StartInfo.CreateNoWindow = true;
-                p.StartInfo.RedirectStandardInput = true;
-                p.StartInfo.RedirectStandardOutput = true;
-                p.StartInfo.WorkingDirectory = workingDire;
-                p.Start();
-                for (int i = 0; i < 500; i++)
-                    if (p.WaitForExit(100))
-                        break;
-                if(p.HasExited)
-                {
-                    if (p.ExitCode == 0 && File.Exists(exeFile))
-                        return null;
+                    Process p = new Process();
+                    string workingDire = Path.GetDirectoryName(exeFile);
+                    p.StartInfo.FileName = @"g++";
+                    p.StartInfo.Arguments = "-Wall -std=c++11 -o \"" + Path.GetFileName(exeFile) + "\" ";
+                    foreach (var source in sourceFiles)
+                    {
+                        p.StartInfo.Arguments += string.Format("\"{0}\"", source);
+                    }
+                    p.StartInfo.UseShellExecute = false;
+                    p.StartInfo.RedirectStandardError = true;
+                    p.StartInfo.CreateNoWindow = true;
+                    p.StartInfo.RedirectStandardInput = true;
+                    p.StartInfo.RedirectStandardOutput = true;
+                    p.StartInfo.WorkingDirectory = workingDire;
+                    string path = Environment.GetEnvironmentVariable("Path");
+                    p.StartInfo.EnvironmentVariables["Path"] = path;
+                    p.Start();
+                    for (int i = 0; i < CompilationTimeOut / 100; i++)
+                        if (p.WaitForExit(100))
+                            break;
+                    if (p.HasExited)
+                    {
+                        if (p.ExitCode == 0 && File.Exists(exeFile))
+                            return null;
+                        else
+                            return p.StandardOutput.ReadToEnd() + "\n" + p.StandardError.ReadToEnd();
+                    }
                     else
-                        return p.StandardOutput.ReadToEnd() + "\n" + p.StandardError.ReadToEnd();
+                    {
+                        p.Kill();
+                        throw new Exception("Error: g++ compile timeout");
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    p.Kill();
-                    return "Error: g++ compile timeout";
+                    exceptionMessage = e.Message;
                 }
-            }
-            catch(Exception e)
-            {
-                return e.Message;
-            }
+                Tester.CleanUp(null);
+                tryNumber++;
+            } while (tryNumber < TryCount);
+            return exceptionMessage;
         }
 
         private static string ReadDummyFile()
@@ -140,7 +156,7 @@ namespace JudgeSharp.Compilers
         }
         
         private const long dummyMemory = 50*1024*1024L;
-        private const double dummyTime = 500;
+        private const double dummyTime = 1000;
         private TestResourceResult dummyResource;
 
     }
