@@ -90,16 +90,16 @@ If you want to support multi accepted output problem, you may have to implement 
 ## Version and Updates
 
 ### Version 1.1.0.0
--Downgrade to .net 4.0 for backward compatibility.
--Adding Add Batch Test Cases Files feature. 
--Adding Lock feature for to problem set when it has at least one locked problem.
--Allowing the application to launch without the g++ compiler if the g++ compiler failed to initialize.
--Allowing the application to automatically detect the g++ compiler if it is in the working directory inside the MinGW64/bin folder.
--Recalibration the time and memory constants of the dummy program which is used to calculate the relative resource usage.
--Allowing any type of files to be opened as a test case file.
--Fixing bug when testing a file multiple times on low performance machine.
--Fixing bug when opening a problem set two times.
--Adding and improving icons and images.
+*- Downgrade to .net 4.0 for backward compatibility.
+*- Adding Add Batch Test Cases Files feature. 
+*- Adding Lock feature for to problem set when it has at least one locked problem.
+*- Allowing the application to launch without the g++ compiler if the g++ compiler failed to initialize.
+*- Allowing the application to automatically detect the g++ compiler if it is in the working directory inside the MinGW64/bin folder.
+*- Recalibration the time and memory constants of the dummy program which is used to calculate the relative resource usage.
+*- Allowing any type of files to be opened as a test case file.
+*- Fixing bug when testing a file multiple times on low performance machine.
+*- Fixing bug when opening a problem set two times.
+*- Adding and improving icons and images.
 
 ### Version 1.0.0.0
 
@@ -107,11 +107,11 @@ First Lunch of the project.
 
 ## Authors
 
-Ahmad Bashar Eter (https://github.com/BasharKernel)
-Any answer asks me on my email below.
-Feel free to fork this project and improve it!
-GitHub: https://github.com/BasharKernel/JudgeSharp
-Thanks to M.Besher Massri for testing the project.
+*Ahmad Bashar Eter (https://github.com/BasharKernel)
+*Any answer asks me on my email below.
+*Feel free to fork this project and improve it!
+*GitHub: https://github.com/BasharKernel/JudgeSharp
+*Thanks to M.Besher Massri for testing the project.
 
 ## License
 
@@ -124,5 +124,3 @@ GNU General Public: http://www.gnu.org/licenses.
 For usage not under GPL please request my approval for commercial license.    
 Copyright(C) 2017 Ahmad Bashar Eter.                                          
 KernelGD@Hotmail.com                                                          
-
-
